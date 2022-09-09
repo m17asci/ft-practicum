@@ -1,5 +1,6 @@
 package com.practium.FT.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -17,6 +18,7 @@ public class ProductResponseDTO {
     String productName;
     @NotBlank(message = "Product Price is mandatory ")
     String productPrice;
+    @JsonFormat(pattern="yyyy-MM-dd")
     LocalDate productExpirationDate;
     @CreationTimestamp
     LocalDateTime createdAt;

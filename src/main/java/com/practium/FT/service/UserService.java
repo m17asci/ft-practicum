@@ -42,18 +42,18 @@ public class UserService {
         return modelMapper.map(userRepository.save(modelMapper.map(userRequestDTO,User.class)),UserResponseDTO.class);
     }
 
-    public UserResponseDTO updateUser(UserRequestDTO newUserRequest) {
-        User oldUser = userRepository.findById(newUserRequest.getId()).orElseThrow(() -> new UserNotFoundException("Kullanıcı Bulunamadı"));
-        userRepository.findById(newUserRequest.getId())
-                .ifPresent(user -> {
-                    user.setUserName(newUserRequest.getUserName());
-                    user.setUserSurname(newUserRequest.getUserSurname());
-                    user.setUserEmail(newUserRequest.getUserEmail());
-                    user.setUserPhoneNumber(newUserRequest.getUserPhoneNumber());
-                    userRepository.save(user);
-                });
+    public UserResponseDTO updateUser(Long id,UserRequestDTO newUserRequest) {
+        User oldUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Kullanıcı Bulunamadı"));
+                oldUser.setUserName(newUserRequest.getUserName());
+                oldUser.setUserSurname(newUserRequest.getUserSurname());
+                oldUser.setUserEmail(newUserRequest.getUserEmail());
+                oldUser.setUserPhoneNumber(newUserRequest.getUserPhoneNumber());
 
-        return modelMapper.map(userRepository.findById(oldUser.getId()).get(), UserResponseDTO.class);
+                userRepository.save(oldUser);
+
+                return modelMapper.map(userRepository.findById(oldUser.getId()),UserResponseDTO.class);
+
+
     }
 
     public void deleteUserById(Long userId) {

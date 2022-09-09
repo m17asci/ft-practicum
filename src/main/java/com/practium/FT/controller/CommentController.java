@@ -4,9 +4,11 @@ import com.practium.FT.dto.request.CommentRequestDTO;
 import com.practium.FT.dto.response.CommentResponseDTO;
 import com.practium.FT.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -34,14 +36,14 @@ public class CommentController {
         return ResponseEntity.ok(commentService.findCommentByProductId(productId));
     }
 
-   @GetMapping("/user/date")
-    public ResponseEntity<List<CommentResponseDTO>>findUserCommentWithDate(@RequestParam Long userId){
-        return ResponseEntity.ok(commentService.findUserCommentWithDate(userId));
+   @GetMapping("/userDate")
+    public ResponseEntity<List<CommentResponseDTO>>findUserCommentWithDate(@RequestParam Long userId,@RequestParam("start")  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate start, @RequestParam("end")  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate end){
+        return ResponseEntity.ok(commentService.findUserCommentWithDate(userId,start,end));
     }
 
-    @GetMapping("/product/date")
-    public ResponseEntity<List<CommentResponseDTO>>findProductCommentWithDate(@RequestParam Long productId){
-        return ResponseEntity.ok(commentService.findProductCommentWithDate(productId));
+    @GetMapping("/productDate")
+    public ResponseEntity<List<CommentResponseDTO>>findProductCommentWithDate(@RequestParam Long productId,@RequestParam("start")  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate start, @RequestParam("end")  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate end){
+        return ResponseEntity.ok(commentService.findProductCommentWithDate(productId,start,end));
     }
 
     @PostMapping
@@ -49,8 +51,8 @@ public class CommentController {
         return ResponseEntity.ok(commentService.createComment(commentRequestDTO));
     }
     @PutMapping("/{commentId}")
-    public ResponseEntity<CommentResponseDTO>updateComment(@RequestBody CommentRequestDTO newCommentRequest){
-        return ResponseEntity.ok(commentService.updateComment(newCommentRequest));
+    public ResponseEntity<CommentResponseDTO>updateComment(@PathVariable Long commentId,@RequestBody CommentRequestDTO newCommentRequest){
+        return ResponseEntity.ok(commentService.updateComment(commentId,newCommentRequest));
 
     }
 

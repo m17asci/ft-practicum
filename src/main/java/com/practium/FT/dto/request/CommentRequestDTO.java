@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentRequestDTO {
 
-    Long id;
     @NotBlank(message = "Comment is mandatory ")
     @Column(columnDefinition = "text",length = 500)
     String Comment;

@@ -9,7 +9,6 @@ import javax.validation.constraints.NotBlank;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRequestDTO {
 
-    Long id;
     @NotBlank(message = "User Name is mandatory ")
     String userName;
     @NotBlank(message = "User Surname is mandatory ")
@@ -19,3 +18,4 @@ public class UserRequestDTO {
     @NotBlank(message = "User Phone Number is mandatory ")
     String userPhoneNumber;
 }
+

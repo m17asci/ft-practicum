@@ -1,4 +1,5 @@
 package com.practium.FT.repository;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.practium.FT.entity.Comment;
 import com.practium.FT.entity.Product;
 import com.practium.FT.entity.User;
@@ -15,7 +16,10 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
 
     List<Comment> findByUser(User user);
 
-    List<Comment> findByCommentDateBetween(LocalDate start, LocalDate end);
+
+
+    List<Comment> findByUserIdAndCommentDateBetween(Long userId ,LocalDate start, LocalDate end);
+    List<Comment> findByProductIdAndCommentDateBetween(Long productId,LocalDate start,LocalDate end);
 
 
 

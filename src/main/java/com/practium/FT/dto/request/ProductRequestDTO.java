@@ -1,5 +1,6 @@
 package com.practium.FT.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -9,10 +10,10 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductRequestDTO {
 
-    Long id;
     @NotBlank(message = "Product Name is mandatory ")
     String productName;
     @NotBlank(message = "Product Price is mandatory ")
     String productPrice;
+    @JsonFormat(pattern="yyyy-MM-dd")
     LocalDate productExpirationDate;
 }

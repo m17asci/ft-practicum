@@ -23,7 +23,7 @@ public class ProductController  {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductResponseDTO>  findProductByProductId(@PathVariable Long productId){
+    public ResponseEntity<ProductResponseDTO> findProductByProductId(@PathVariable Long productId){
         return ResponseEntity.ok(productService.findProduct(productId));
     }
     @GetMapping("/date")
@@ -41,8 +41,8 @@ public class ProductController  {
         return ResponseEntity.ok(productService.createOneProduct(productRequestDto));
     }
     @PutMapping("/{productId}")
-    public ResponseEntity<ProductResponseDTO>updateOneProduct(@RequestBody ProductRequestDTO newProduct){
-        return ResponseEntity.ok(productService.updateOneProduct(newProduct));
+    public ResponseEntity<ProductResponseDTO>updateOneProduct(@PathVariable Long productId,@RequestBody ProductRequestDTO newProduct){
+        return ResponseEntity.ok(productService.updateOneProduct(productId,newProduct));
     }
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void>deleteOneProduct(@PathVariable Long productId){

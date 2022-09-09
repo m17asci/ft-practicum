@@ -18,7 +18,6 @@ public class UserController {
 
     private final UserService userService;
 
-
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> findAllUser() {
         return ResponseEntity.ok(userService.findAllUser());
@@ -38,8 +37,8 @@ public class UserController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@RequestBody UserRequestDTO newUser) {
-        return ResponseEntity.ok(userService.updateUser(newUser));
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id,@RequestBody UserRequestDTO newUser) {
+        return ResponseEntity.ok(userService.updateUser(id,newUser));
     }
 
     @DeleteMapping("/{id}")

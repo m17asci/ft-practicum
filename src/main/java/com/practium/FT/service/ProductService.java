@@ -30,7 +30,6 @@ public class ProductService {
 
     }
 
-
     public List<ProductResponseDTO>getAllProductsWithDate() {
         productRepository.findAll();
 
@@ -71,17 +70,15 @@ public class ProductService {
 
     }
 
-    public ProductResponseDTO updateOneProduct(ProductRequestDTO newProductRequest) {
-        Product oldProduct = productRepository.findById(newProductRequest.getId()).orElseThrow(() -> new ProductNotFoundException("Ürün Bulunamadı"));
-        productRepository.findById(newProductRequest.getId())
-                .ifPresent(product -> {
-                    product.setProductName(newProductRequest.getProductName());
-                    product.setProductPrice(newProductRequest.getProductPrice());
-                    product.setProductPrice(newProductRequest.getProductPrice());
-                    product.setProductExpirationDate(newProductRequest.getProductExpirationDate());
-                    productRepository.save(product);
-                });
-        return modelMapper.map(productRepository.findById(oldProduct.getId()).get(), ProductResponseDTO.class);
+    public ProductResponseDTO updateOneProduct(Long productId,ProductRequestDTO newProductRequest) {
+        Product oldProduct = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Ürün Bulunamadı"));
+
+                    oldProduct.setProductName(newProductRequest.getProductName());
+                    oldProduct.setProductPrice(newProductRequest.getProductPrice());
+                    oldProduct.setProductExpirationDate(newProductRequest.getProductExpirationDate());
+                    productRepository.save(oldProduct);
+
+        return modelMapper.map(productRepository.findById(oldProduct.getId()), ProductResponseDTO.class);
     }
 
     public void deleteById(Long productId) {
