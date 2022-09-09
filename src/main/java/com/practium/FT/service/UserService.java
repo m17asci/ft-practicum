@@ -7,17 +7,23 @@ import com.practium.FT.exception.UserNotFoundException;
 import com.practium.FT.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
-
+    @Cacheable(value = "user")
     public List<UserResponseDTO> findAllUser() {
         return userRepository.findAll()
                 .stream()
@@ -25,7 +31,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-
+    @Cacheable(value = "user")
     public UserResponseDTO findUserById(Long id) {
         return modelMapper
                 .map(userRepository
@@ -38,10 +44,12 @@ public class UserService {
         return userRepository.findById(id).get();
 
     }
+    @Transactional
     public UserResponseDTO createOneUser(UserRequestDTO userRequestDTO) {
         return modelMapper.map(userRepository.save(modelMapper.map(userRequestDTO,User.class)),UserResponseDTO.class);
     }
-
+    @Transactional
+    @CachePut(value = "user")
     public UserResponseDTO updateUser(Long id,UserRequestDTO newUserRequest) {
         User oldUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Kullanıcı Bulunamadı"));
                 oldUser.setUserName(newUserRequest.getUserName());
@@ -55,7 +63,7 @@ public class UserService {
 
 
     }
-
+    @CacheEvict(value = "user",allEntries = true)
     public void deleteUserById(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Kullanıcı bulunamadı."));
         userRepository.deleteById(user.getId());

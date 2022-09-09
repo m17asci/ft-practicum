@@ -11,9 +11,12 @@ import com.practium.FT.exception.UserNotFoundException;
 import com.practium.FT.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +72,7 @@ public class CommentService {
         }
         return commentResponseDTOS;
     }
-
+  @Cacheable(value = "comment")
     public List<CommentResponseDTO> findUserCommentWithDate(Long userId,LocalDate start, LocalDate end) {
 
         User user = userService.findById(userId);
@@ -89,7 +92,7 @@ public class CommentService {
     }
 
 
-
+    @Cacheable(value = "comment")
   public List<CommentResponseDTO> findProductCommentWithDate(Long productId,LocalDate start,LocalDate end)  {
 
         Product product = productService.findById(productId);
@@ -107,12 +110,13 @@ public class CommentService {
         }
         return commentResponseDTOS;
     }
-
+    @Transactional
     public CommentResponseDTO createComment(CommentRequestDTO commentRequestDTO) {
         return modelMapper.map(commentRepository.save(modelMapper.map(commentRequestDTO, Comment.class)), CommentResponseDTO.class);
 
     }
-
+     @Transactional
+     @CachePut(value = "comment")
     public CommentResponseDTO updateComment(Long commentId, CommentRequestDTO newCommentRequest) {
 
         Comment oldComment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException("Yorum Bulunamadı"));
@@ -124,7 +128,7 @@ public class CommentService {
         return modelMapper.map(commentRepository.findById(oldComment.getId()), CommentResponseDTO.class);
 
     }
-
+   @CacheEvict(value = "delete",allEntries = true)
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
     }

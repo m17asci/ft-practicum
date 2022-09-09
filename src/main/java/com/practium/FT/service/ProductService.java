@@ -7,7 +7,12 @@ import com.practium.FT.exception.ProductNotFoundException;
 import com.practium.FT.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +26,7 @@ public class ProductService {
 
     private final ModelMapper modelMapper;
 
-
+    @Cacheable(value = "product")
     public List<ProductResponseDTO> getAllProducts() {
         return productRepository.findAll()
                 .stream()
@@ -29,7 +34,7 @@ public class ProductService {
                 .collect(Collectors.toList());
 
     }
-
+    @Cacheable(value = "product")
     public List<ProductResponseDTO>getAllProductsWithDate() {
         productRepository.findAll();
 
@@ -42,7 +47,7 @@ public class ProductService {
 
         return productResponseDTOS;
     }
-
+    @Cacheable(value = "product")
     public List<ProductResponseDTO>getAllProductsWithDateExp(){
         productRepository.findAll();
         List<Product> products = productRepository.findByProductExpirationDateBefore(LocalDate.of(2022,9,8));
@@ -54,7 +59,7 @@ public class ProductService {
         return productResponseDTOS;
     }
 
-
+     @Transactional
     public ProductResponseDTO createOneProduct(ProductRequestDTO productRequestDTO) {
         return modelMapper
                 .map(productRepository.save(modelMapper.map(productRequestDTO, Product.class)), ProductResponseDTO.class);
@@ -69,7 +74,8 @@ public class ProductService {
         return productRepository.findById(id).get();
 
     }
-
+     @Transactional
+     @CachePut(value = "product")
     public ProductResponseDTO updateOneProduct(Long productId,ProductRequestDTO newProductRequest) {
         Product oldProduct = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Ürün Bulunamadı"));
 
@@ -80,7 +86,7 @@ public class ProductService {
 
         return modelMapper.map(productRepository.findById(oldProduct.getId()), ProductResponseDTO.class);
     }
-
+   @CacheEvict(value = "product",allEntries = true)
     public void deleteById(Long productId) {
         productRepository.deleteById(productId);
     }
