@@ -17,7 +17,6 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     List<Comment> findByUser(User user);
 
 
-
     List<Comment> findByUserIdAndCommentDateBetween(Long userId ,LocalDate start, LocalDate end);
     List<Comment> findByProductIdAndCommentDateBetween(Long productId,LocalDate start,LocalDate end);
 

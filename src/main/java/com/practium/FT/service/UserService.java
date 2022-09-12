@@ -3,7 +3,7 @@ package com.practium.FT.service;
 import com.practium.FT.dto.request.UserRequestDTO;
 import com.practium.FT.dto.response.UserResponseDTO;
 import com.practium.FT.entity.User;
-import com.practium.FT.exception.UserNotFoundException;
+import com.practium.FT.exception.NotFoundException;
 import com.practium.FT.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -36,7 +36,7 @@ public class UserService {
         return modelMapper
                 .map(userRepository
                         .findUserById(id)
-                        .orElseThrow(() -> new UserNotFoundException("Kullanıcı bulunamadı")), UserResponseDTO.class);
+                        .orElseThrow(() -> new NotFoundException("Kullanıcı bulunamadı")), UserResponseDTO.class);
 
     }
 
@@ -51,7 +51,7 @@ public class UserService {
     @Transactional
     @CachePut(value = "user")
     public UserResponseDTO updateUser(Long id,UserRequestDTO newUserRequest) {
-        User oldUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Kullanıcı Bulunamadı"));
+        User oldUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Kullanıcı Bulunamadı"));
                 oldUser.setUserName(newUserRequest.getUserName());
                 oldUser.setUserSurname(newUserRequest.getUserSurname());
                 oldUser.setUserEmail(newUserRequest.getUserEmail());
@@ -65,7 +65,7 @@ public class UserService {
     }
     @CacheEvict(value = "user",allEntries = true)
     public void deleteUserById(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Kullanıcı bulunamadı."));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Kullanıcı bulunamadı."));
         userRepository.deleteById(user.getId());
     }
 

@@ -5,9 +5,7 @@ import com.practium.FT.dto.response.CommentResponseDTO;
 import com.practium.FT.entity.Comment;
 import com.practium.FT.entity.Product;
 import com.practium.FT.entity.User;
-import com.practium.FT.exception.CommentNotFoundException;
-import com.practium.FT.exception.ProductNotFoundException;
-import com.practium.FT.exception.UserNotFoundException;
+import com.practium.FT.exception.NotFoundException;
 import com.practium.FT.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -40,7 +38,7 @@ public class CommentService {
     }
 
     public CommentResponseDTO findComment(Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException("Ürün Bulunamadı"));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("Ürün Bulunamadı"));
         return modelMapper.map(comment, CommentResponseDTO.class);
 
     }
@@ -48,7 +46,7 @@ public class CommentService {
     public List<CommentResponseDTO> findCommentByUserId(Long userId) {
         User user = userService.findById(userId);
         if (userId == null) {
-            throw new UserNotFoundException("Kullanıcı Bulunamadı");
+            throw new NotFoundException("Kullanıcı Bulunamadı");
         }
         List<Comment> comments = commentRepository.findByUser(user);
         List<CommentResponseDTO> commentResponseDTOS = new ArrayList<>();
@@ -62,7 +60,7 @@ public class CommentService {
     public List<CommentResponseDTO> findCommentByProductId(Long productId) {
         Product product = productService.findById(productId);
         if (product == null) {
-            throw new ProductNotFoundException("Ürün Bulunamadı");
+            throw new NotFoundException("Ürün Bulunamadı");
         }
         List<Comment> comments = commentRepository.findByProduct(product);
         List<CommentResponseDTO> commentResponseDTOS = new ArrayList<>();
@@ -77,7 +75,7 @@ public class CommentService {
 
         User user = userService.findById(userId);
         if (userId == null) {
-            throw new UserNotFoundException("Kullanıcı Bulunamadı");
+            throw new NotFoundException("Kullanıcı Bulunamadı");
         }
         commentRepository.findByUser(user);
 
@@ -97,7 +95,7 @@ public class CommentService {
 
         Product product = productService.findById(productId);
         if(productId == null){
-            throw new ProductNotFoundException("Ürün Bulunamadı");
+            throw new NotFoundException("Ürün Bulunamadı");
         }
         commentRepository.findByProduct(product);
 
@@ -119,7 +117,7 @@ public class CommentService {
      @CachePut(value = "comment")
     public CommentResponseDTO updateComment(Long commentId, CommentRequestDTO newCommentRequest) {
 
-        Comment oldComment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException("Yorum Bulunamadı"));
+        Comment oldComment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("Yorum Bulunamadı"));
 
         oldComment.setComment(newCommentRequest.getComment());
         oldComment.setCommentDate(newCommentRequest.getCommentDate());
@@ -128,7 +126,7 @@ public class CommentService {
         return modelMapper.map(commentRepository.findById(oldComment.getId()), CommentResponseDTO.class);
 
     }
-   @CacheEvict(value = "delete",allEntries = true)
+   @CacheEvict(value = "comment",allEntries = true)
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
     }

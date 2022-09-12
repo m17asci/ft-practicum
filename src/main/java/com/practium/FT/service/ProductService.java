@@ -3,7 +3,7 @@ package com.practium.FT.service;
 import com.practium.FT.dto.request.ProductRequestDTO;
 import com.practium.FT.dto.response.ProductResponseDTO;
 import com.practium.FT.entity.Product;
-import com.practium.FT.exception.ProductNotFoundException;
+import com.practium.FT.exception.NotFoundException;
 import com.practium.FT.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -48,7 +48,7 @@ public class ProductService {
         return productResponseDTOS;
     }
     @Cacheable(value = "product")
-    public List<ProductResponseDTO>getAllProductsWithDateExp(){
+    public List<ProductResponseDTO> getAllProductsWithDateExp(){
         productRepository.findAll();
         List<Product> products = productRepository.findByProductExpirationDateBefore(LocalDate.of(2022,9,8));
         List<ProductResponseDTO>productResponseDTOS=new ArrayList<>();
@@ -66,7 +66,7 @@ public class ProductService {
     }
 
     public ProductResponseDTO findProduct(Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Yorum bulunamadı."));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new NotFoundException("Yorum bulunamadı."));
         return modelMapper.map(product, ProductResponseDTO.class);
     }
 
@@ -75,9 +75,9 @@ public class ProductService {
 
     }
      @Transactional
-     @CachePut(value = "product")
+     @CachePut(value = "oldProduct")
     public ProductResponseDTO updateOneProduct(Long productId,ProductRequestDTO newProductRequest) {
-        Product oldProduct = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Ürün Bulunamadı"));
+        Product oldProduct = productRepository.findById(productId).orElseThrow(() -> new NotFoundException("Ürün Bulunamadı"));
 
                     oldProduct.setProductName(newProductRequest.getProductName());
                     oldProduct.setProductPrice(newProductRequest.getProductPrice());
