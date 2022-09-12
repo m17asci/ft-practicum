@@ -1,7 +1,7 @@
 
 # ft-practicum
 
-This project was built for FT Tekonoloji.
+This project was built for FT Teknoloji.
 
 TECHNOLOGIES :
 
